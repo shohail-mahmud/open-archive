@@ -16,16 +16,16 @@ export default function App() {
 
   // Page title + scroll handling per route
   useEffect(() => {
-    const base = "Open Archive — Independent Archive search";
+    const base = "Open Archive - Independent Archive search";
     document.title =
-      path === "/terms" ? "Terms & Conditions — Open Archive"
-      : path === "/privacy" ? "Privacy Policy — Open Archive"
+      path === "/terms" ? "Terms & Conditions - Open Archive"
+      : path === "/privacy" ? "Privacy Policy - Open Archive"
       : path === "/explore"
-        ? "Explore — Open Archive"
+        ? "Explore - Open Archive"
         : path === "/collections"
         ? "Collections — Open Archive"
         : path.startsWith("/item/")
-        ? "Item — Open Archive"
+        ? "Item - Open Archive"
         : base;
   }, [path]);
 
