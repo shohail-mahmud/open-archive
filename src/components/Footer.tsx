@@ -1,0 +1,84 @@
+import "@fontsource/caveat/latin-500.css";
+import signatureMark from "../assets/shohail-mark.png";
+import { href } from "../router";
+
+const COLS: { title: string; links: { label: string; to: string; external?: boolean }[] }[] = [
+  {
+    title: "Navigate",
+    links: [
+      { label: "Explore", to: href("/explore") },
+      { label: "Collections", to: href("/collections") },
+      { label: "About", to: href("/about") },
+    ],
+  },
+  {
+    title: "Elsewhere",
+    links: [
+      { label: "Resources", to: "https://help.archive.org/", external: true },
+      { label: "Support", to: "https://archive.org/donate", external: true },
+      { label: "Wayback Machine", to: "https://web.archive.org/", external: true },
+    ],
+  },
+];
+
+// "Internet Archive" in Dai Banna SIL Book Italic measures ≈ 5.86em wide.
+const WORDMARK_SIZE = "16.4vw";
+
+export default function Footer() {
+  return (
+    <footer className="page-end-gap border-t border-rule">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-12 px-5 py-12 text-[13px] sm:px-8 md:grid-cols-12 lg:px-10">
+        <div className="col-span-2 max-w-xs md:col-span-5">
+          <p className="leading-relaxed text-mute">
+          Independent catalogue by Shohail Mahmud. Records are sourced from archive.org. Not affiliated with or endorsed by the Internet Archive.
+          </p>
+          <p className="mt-2.5 flex items-center gap-1.5 text-[17px] leading-tight font-medium text-ink" style={{fontFamily:'Caveat, cursive'}}>
+            <img src={signatureMark} alt="" className="h-5 w-auto shrink-0" />
+            <span>A website by <a href="https://www.instagram.com/shohailmahmud09/" target="_blank" rel="noopener noreferrer" aria-label="Shohail Mahmud on Instagram" className="text-action whitespace-nowrap">Shohail Mahmud</a>.</span>
+          </p>
+        </div>
+        {COLS.map((c, i) => (
+          <nav
+            key={c.title}
+            aria-label={c.title}
+            className={i === 0 ? "md:col-span-3 md:col-start-7" : "md:col-span-3"}
+          >
+            <h3 className="mb-4 text-[10px] uppercase tracking-[0.18em] text-mute">{c.title}</h3>
+            <ul className="space-y-2.5">
+              {c.links.map((l) => (
+                <li key={l.label}>
+                  <a
+                    href={l.to}
+                    {...(l.external ? { target: "_blank", rel: "noreferrer" } : {})}
+                    className="text-action"
+                  >
+                    {l.label}
+                    {l.external && <span aria-hidden> ↗</span>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))}
+      </div>
+
+      <nav aria-label="Site policies" className="flex flex-wrap justify-center gap-x-6 gap-y-2 px-5 pb-4 text-[12px] text-mute sm:px-8 lg:px-10">
+        <a className="text-action" href={href("/terms")}>Terms &amp; Conditions</a>
+        <a className="text-action" href={href("/privacy")}>Privacy Policy</a>
+      </nav>
+      {/* Oversized wordmark, deliberately cropped by the bottom edge of the page */}
+      <div
+        aria-hidden
+        className="overflow-hidden select-none"
+        style={{ height: `calc(${WORDMARK_SIZE} * 0.56)` }}
+      >
+        <div
+          className="display whitespace-nowrap text-center leading-none tracking-[-0.01em]"
+          style={{ fontSize: WORDMARK_SIZE }}
+        >
+          Open Archive
+        </div>
+      </div>
+    </footer>
+  );
+}
