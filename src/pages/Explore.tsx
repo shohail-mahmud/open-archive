@@ -1,3 +1,4 @@
+import ActionIcon from "../components/ActionIcon";
 import "./explore.css";
 import {returnMark} from "../returnPosition";
 import Thumbnail from "../components/Thumbnail";
@@ -32,6 +33,7 @@ const ICONS: Record<string,string> = {
   software: "M3 4h18v16H3z M3 8h18 M10 11l-3 3 3 3 M14 11l3 3-3 3",
   web: "M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0z M2 12h20 M12 2q-9 10 0 20 9-10 0-20z",
   search: "M16 10a6 6 0 1 1-12 0 6 6 0 0 1 12 0z M15 15l6 6",
+  filters:"M3 7h5m5 0h8 M3 17h10m5 0h3 M8 4h5v6H8z M13 14h5v6h-5z",
   sidebar:"M4 3.5h16a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1-1.5 1.5H4A1.5 1.5 0 0 1 2.5 19V5A1.5 1.5 0 0 1 4 3.5z M9 4v16",
   list:"M3 6h3 M9 6h12 M3 12h3 M9 12h12 M3 18h3 M9 18h12"
 };
@@ -62,7 +64,7 @@ export default function Explore({ route }: { route: Route }) {
     requestAnimationFrame(()=>toggleRef.current?.focus({preventScroll:true}));
   };
   const toggleLabel = panelOpen?'Hide categories and filters':'Show categories and filters';
-  const panelToggle = <button ref={toggleRef} type="button" className="xp-sidebar-button" aria-controls="xp-filter-panel" aria-expanded={panelOpen} aria-label={toggleLabel} title={toggleLabel} onClick={toggleSidebar}><Icon name="sidebar"/></button>;
+  const panelToggle = <button ref={toggleRef} type="button" className="xp-sidebar-button" aria-controls="xp-filter-panel" aria-expanded={panelOpen} aria-label={toggleLabel} title={toggleLabel} onClick={toggleSidebar}><Icon name={compact?"filters":"sidebar"}/>{compact&&<><span>Filters</span><svg className="filter-chevron" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="m4 6 4 4 4-4"/></svg></>}</button>;
   const openOnly = p.get("open") !== "0";
   const page = Math.max(1, Number(p.get("page")) || 1);
 
@@ -115,7 +117,7 @@ export default function Explore({ route }: { route: Route }) {
 
   return (
     <main className="xp px-5 sm:px-8 lg:px-10">
-      <button type="button" onClick={goBackInApp} className="xp-back">← Back</button>
+      <button type="button" onClick={goBackInApp} className="xp-back"><ActionIcon name="back"/> Back</button>
       <div className="xp-header"><h1 className="display">Explore</h1><p>Search the Internet Archive by keyword, or browse a category.</p></div>
       <form role="search" className="xp-search" onSubmit={e=>{e.preventDefault();update({q:draft.trim() || undefined});}}>
         <label className="xp-scope"><span className="sr-only">Search field</span><select value={field} onChange={e=>update({field:e.target.value||undefined,q:draft.trim()||undefined})}>
@@ -123,19 +125,20 @@ export default function Explore({ route }: { route: Route }) {
         </select></label>
         <label className="xp-input"><Icon name="search"/><span className="sr-only">Search the catalogue</span><input ref={queryInput} id="q" type="search" placeholder={field ? `Search by ${field}…` : "Title, creator or keyword…"} value={draft} onChange={e=>setDraft(e.target.value)} /></label>
         {draft && <button className="xp-clear" type="button" aria-label="Clear search text" onClick={()=>{setDraft("");queryInput.current?.focus();update({q:undefined})}}>Clear</button>}
-        <button className="xp-submit" type="submit">Search <span aria-hidden="true">→</span></button>
+        <button className="xp-submit" type="submit">Search <span aria-hidden="true"><ActionIcon name="forward"/></span></button>
       </form>
       <div className={`xp-layout${panelOpen?"":" xp-wide"}`}>
+      {compact&&panelToggle}
       <aside className="xp-side" aria-label="Search filters" hidden={!panelOpen}>
       <div id="xp-filter-panel" className="xp-panel open">
-        <div className="xp-category-heading"><h2 className="xp-label">Categories</h2>{panelOpen && panelToggle}</div><ul className="xp-categories">{TYPES.map(t=><li key={t.value}><button aria-pressed={type===t.value} onClick={()=>update({type:t.value||undefined})}><Icon name={t.value}/>{t.label}</button></li>)}</ul>
+        <div className="xp-category-heading"><h2 className="xp-label">Categories</h2>{!compact && panelOpen && panelToggle}</div><ul className="xp-categories">{TYPES.map(t=><li key={t.value}><button aria-pressed={type===t.value} onClick={()=>update({type:t.value||undefined})}><Icon name={t.value}/>{t.label}</button></li>)}</ul>
         <div className="xp-refine"><h2 className="xp-label">Refine results</h2>
         <label>Publication year<select value={period} onChange={e=>update({period:e.target.value||undefined})}><option value="">Any year</option><option value="early">Before 1900</option><option value="twentieth">1900–1999</option><option value="recent">2000 onwards</option></select></label>
         <label className="xp-check"><input type="checkbox" checked={openOnly} onChange={e=>update({open:e.target.checked?undefined:"0"})}/> Hide restricted items</label>
         {(type||period||!openOnly||collection||field||sort!=="relevance")&&<button className="xp-reset" onClick={()=>update({type:undefined,period:undefined,collection:undefined,field:undefined,open:undefined,sort:undefined})}>Reset filters</button>}</div>
       </div></aside>
       <div className="xp-results" ref={topRef}>
-        <div className="xp-toolbar"><div className="xp-result-heading">{!panelOpen && panelToggle}<div><h2>{q?'Search results':(TYPES.find(t=>t.value===type)?.label.replace('All categories','Browse all items')||'Browse items')}</h2>
+        <div className="xp-toolbar"><div className="xp-result-heading">{!compact && !panelOpen && panelToggle}<div><h2>{q?'Search results':(TYPES.find(t=>t.value===type)?.label.replace('All categories','Browse all items')||'Browse items')}</h2>
         <p>{docs!==null&&!error ? `${total.toLocaleString("en-US")} ${total===1?'result':'results'}` : error?'Search unavailable':'Searching the catalogue'}{q&&` for “${q}”`}</p></div></div>
         <div className="xp-tools"><label><span className="sr-only">Sort results</span><select value={sort} onChange={e=>update({sort:e.target.value==='relevance'?undefined:e.target.value})}><option value="relevance">{q?'Relevance':'Most viewed (default)'}</option><option value="downloads">Most viewed</option><option value="newest">Newest</option><option value="oldest">Oldest</option></select></label>
         <div className="xp-switch">{(['grid','list'] as const).map(v=><button key={v} aria-label={`${v==='grid'?'Grid':'List'} view`} aria-pressed={view===v} onClick={()=>setView(v)}><Icon name={v==='grid'?'':v}/></button>)}</div></div></div>
@@ -184,7 +187,7 @@ export default function Explore({ route }: { route: Route }) {
                   onClick={() => goPage(page - 1)}
                   className="text-action disabled:pointer-events-none disabled:opacity-30"
                 >
-                  ← Previous
+                  <ActionIcon name="back"/> Previous
                 </button>
                 <span className="text-mute">
                   Page {page.toLocaleString("en-US")} of {pages.toLocaleString("en-US")}
@@ -194,7 +197,7 @@ export default function Explore({ route }: { route: Route }) {
                   onClick={() => goPage(page + 1)}
                   className="text-action disabled:pointer-events-none disabled:opacity-30"
                 >
-                  Next →
+                  Next <ActionIcon name="forward"/>
                 </button>
               </nav>
             )}
@@ -217,7 +220,7 @@ function Result({ d }: { d: SearchDoc }) {
       <div className="xp-card-body"><p className="xp-media"><Icon name={String(d.mediatype)}/>{MEDIA_LABEL[String(d.mediatype)] || d.mediatype || "Archive item"}{year&&` · ${year}`}</p>
       <h2 className="display">{d.title || d.identifier}</h2>{creator&&<p className="xp-credit">{creator}</p>}
 
-      <div className="xp-card-foot"><span>{restricted?"Restricted":typeof d.downloads==='number'?`${d.downloads.toLocaleString('en-US')} views`:"View record"}</span><span aria-hidden="true">↗</span></div></div>
+      <div className="xp-card-foot"><span>{restricted?"Restricted":typeof d.downloads==='number'?`${d.downloads.toLocaleString('en-US')} views`:"View record"}</span><ActionIcon name="external"/></div></div>
     </a></li>
   );
 }
