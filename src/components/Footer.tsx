@@ -1,3 +1,5 @@
+import ActionIcon from "./ActionIcon";
+import "@fontsource/dai-banna-sil/latin-500-italic.css";
 import "@fontsource/caveat/latin-500.css";
 import signatureMark from "../assets/shohail-mark.png";
 import { href } from "../router";
@@ -20,9 +22,6 @@ const COLS: { title: string; links: { label: string; to: string; external?: bool
     ],
   },
 ];
-
-// "Internet Archive" in Dai Banna SIL Book Italic measures ≈ 5.86em wide.
-const WORDMARK_SIZE = "16.4vw";
 
 export default function Footer() {
   return (
@@ -53,7 +52,7 @@ export default function Footer() {
                     className="text-action"
                   >
                     {l.label}
-                    {l.external && <span aria-hidden> ↗</span>}
+                    {l.external && <>{" "}<ActionIcon name="external"/></>}
                   </a>
                 </li>
               ))}
@@ -66,19 +65,10 @@ export default function Footer() {
         <a className="text-action" href={href("/terms")}>Terms &amp; Conditions</a>
         <a className="text-action" href={href("/privacy")}>Privacy Policy</a>
       </nav>
-      {/* Oversized wordmark, deliberately cropped by the bottom edge of the page */}
-      <div
-        aria-hidden
-        className="overflow-hidden select-none"
-        style={{ height: `calc(${WORDMARK_SIZE} * 0.56)` }}
-      >
-        <div
-          className="display whitespace-nowrap text-center leading-none tracking-[-0.01em]"
-          style={{ fontSize: WORDMARK_SIZE }}
-        >
-          Open Archive
-        </div>
-      </div>
+      {/* Fit the whole line across the footer; crop only the lower half of the lettering. */}
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 476 52" className="block w-full overflow-hidden select-none" fill="currentColor">
+        <text className="display" style={{fontWeight:500}} textLength="464" lengthAdjust="spacingAndGlyphs" x="238" y="74" textAnchor="middle" fontSize="100" letterSpacing="-1">Open Archive</text>
+      </svg>
     </footer>
   );
 }
