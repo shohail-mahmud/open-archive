@@ -1,3 +1,4 @@
+import ActionIcon from "../components/ActionIcon";
 import Thumbnail from "../components/Thumbnail";
 import {thumbUrl} from "../api/archive";
 import { useEffect, useState } from "react";
@@ -28,7 +29,7 @@ export default function Home() {
 function Hero() {
   return (
     <section className="px-5 sm:px-8 lg:px-10">
-      <div className="flex min-h-[78svh] flex-col items-center justify-center pb-16 pt-32 text-center sm:min-h-[84svh]">
+      <div className="flex min-h-[60svh] flex-col items-center justify-center pb-8 pt-20 text-center sm:min-h-[84svh] sm:pb-16 sm:pt-32">
         <h1
           className="display rise text-[clamp(3rem,min(20vw,23svh),13rem)] leading-[0.87] tracking-[-0.025em]"
         >
@@ -52,7 +53,7 @@ function Hero() {
           <a
             key={c.type}
             href={href("/explore", { type: c.type })}
-            className={`block w-full text-balance transition-opacity duration-200 hover:opacity-50 ${c.align}`}
+            className={`block w-full min-h-11 content-center sm:min-h-0 text-balance transition-opacity duration-200 hover:opacity-50 ${c.align}`}
           >
             {c.label}
           </a>
@@ -130,7 +131,7 @@ function ExploreSection() {
               href={href("/explore")}
               className="mt-5 inline-flex min-h-12 items-center justify-center gap-4 rounded-md bg-ink px-5 text-[15px] font-medium text-white transition-colors hover:bg-neutral-700 focus-visible:outline-offset-4"
             >
-              Explore Archive <span aria-hidden>→</span>
+              Explore Archive <span aria-hidden><ActionIcon name="forward"/></span>
             </a>
           </div>
         </div>
@@ -162,7 +163,7 @@ function Counts() {
   }, []);
 
   return (
-    <div className="subsection-gap grid grid-cols-3 border-t border-rule">
+    <div className="home-counts subsection-gap grid grid-cols-3 border-t border-rule">
       {types.map((t, i) => {
         const v = counts[t.type];
         return (
@@ -227,7 +228,7 @@ function Featured() {
       <div className="mb-5 flex items-baseline justify-between text-[10px] uppercase tracking-[0.2em] text-mute sm:text-[11px]">
         <span>From the collection</span>
         <a href={href("/explore", { sort: "downloads" })} className="text-action normal-case tracking-normal">
-          Most viewed →
+          Most viewed <ActionIcon name="forward"/>
         </a>
       </div>
 
@@ -307,7 +308,7 @@ function AboutSection() {
             {PRINCIPLES.map((p) => (
               <div key={p.t} className="border-t border-rule pt-4">
                 <h3 className="display text-2xl">{p.t}</h3>
-                <p className="mt-3 text-[14px] leading-relaxed text-ink/80">{p.url ? <a href={p.url} target="_blank" rel="noopener noreferrer" className="text-action">{p.d} <span aria-hidden="true">↗</span></a> : p.d}</p>
+                <p className="mt-3 text-[14px] leading-relaxed text-ink/80">{p.url ? <a href={p.url} target="_blank" rel="noopener noreferrer" className="text-action">{p.d} <ActionIcon name="external"/></a> : p.d}</p>
               </div>
             ))}
           </div>
