@@ -23,7 +23,7 @@ export default function App() {
       : path === "/explore"
         ? "Explore - Open Archive"
         : path === "/collections"
-        ? "Collections — Open Archive"
+        ? "Collections - Open Archive"
         : path.startsWith("/item/")
         ? "Item - Open Archive"
         : base;
@@ -54,7 +54,7 @@ export default function App() {
       <Nav path={path} />
       {page}
       <Footer />
-      {path === "/" && <CookieNotice />}
+      <CookieNotice />
     </div>
   );
 }
