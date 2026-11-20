@@ -1,25 +1,54 @@
-# Open Archive — independent Archive search
+<p align="center">
+  <a href="https://openarchive-catalogue.vercel.app/">
+    <img src="./public/open-archive-og.png" width="720" alt="Open Archive">
+  </a>
+</p>
 
-An independent interface by Shohail Mahmud. Not affiliated with, endorsed by, or operated by the Internet Archive. Live factual records use archive.org's Advanced Search and Metadata endpoints. Credits are in the footer, Terms page and THIRD-PARTY-NOTICES.txt.
+<h1 align="center">Open Archive</h1>
+<p align="center">An independent catalogue by Shohail Mahmud for exploring the Internet Archive.</p>
+<p align="center">
+  <strong><a href="https://openarchive-catalogue.vercel.app/">Visit the website</a></strong> ·
+  <a href="https://openarchive-catalogue.vercel.app/explore">Search the catalogue</a> ·
+  <a href="https://openarchive-catalogue.vercel.app/collections">Browse collections</a>
+</p>
 
-## Run or publish
+## About
 
-Use Node 22.12+ (or 20.19+): `npm ci && npm run build`. For a static deployment (including Vercel), publish `dist/`. `dist/index.html` is also the standalone version. For the optional Node metadata/file relay, run `npm start`. Both modes request cover art, selected previews, and the official book and media players directly from archive.org. The optional Node server relays catalogue JSON only. Pages use clean URLs, including /item/<identifier>. The Node server and the included vercel.json serve these paths on direct visits and refresh. For another static host, rewrite these page routes to /index.html. Legacy #/ links are upgraded automatically. A downloaded HTML file still uses hash navigation; without a public site origin its copy button shares the Archive source instead.
+Open Archive brings books, films, recordings, photographs, and software into one searchable catalogue. You can read a book, play a recording, or inspect the files behind a photograph without creating an Open Archive account.
 
-## Media access
+Each item has its own page. That page connects the work to its creator, subjects, available files, and original record on [archive.org](https://archive.org/). Open Archive is the browsing interface; the Internet Archive is the source.
 
-- Covers are loaded lazily on collection cards. The image gallery uses the exact public filename; the Files tab supports filtering and previews. Read, Watch and Listen load the official Archive reader/player only after activation. The original record remains available if a browser blocks embedding.
-- Downloads open on archive.org. There is no download mirror or bulk ZIP, and the old local file/thumbnail endpoints return 403. Restricted or lending records do not get local readers, players, file previews or direct-download controls.
-- A dismissible first-visit homepage cookie and media banner links the Terms and Privacy Policy. Public availability, link notices, and third-party hosting do not establish permission to use or redistribute copyrighted works. Monitor complaints and remove links or previews where appropriate.
+## Features
 
-## Owner checks before launch
+**Search and filters**  
+Search all fields when you only remember a keyword. If you know a title, creator, or subject, search that field instead. Narrow the results by media type or publication period, hide restricted items, and sort by relevance, views, newest, or oldest. Grid view puts covers first; list view makes titles and creators easier to scan.
 
-1. Confirm you own or have permission for the original project and the portrait logo. No new project-wide licence is granted by this package. Preserve any applicable upstream notices.
-2. The Alexandria illustration is credited to Ambrose Dudley/The Stapleton Collection. Check the Wikimedia Commons licensing page linked in the caption for your publication territories. Replace the artwork if its status does not cover your use. Keep the artwork source and credits with your distribution.
-3. Review the Internet Archive Terms at https://archive.org/about/terms for your intended use. Monitor the site-operator contact linked in Terms (or replace it with a monitored email); source-file removals go through the Archive. Confirm hosting, log retention, analytics settings and the Privacy Policy match the actual deployment. Consult appropriate legal advice if needed. This checklist is not legal clearance.
-4. Preserve `THIRD-PARTY-NOTICES.txt`; `npm run build` regenerates it from installed packages and embeds the notices in the Terms page in the single-file build. Recheck notices when adding libraries, fonts or media.
-5. Replace older deployments containing the permissive file relay, and invalidate any old proxy/CDN cache of previously served files and thumbnails. Do not publish an older build alongside this one.
+**Collections**  
+Browse a collection without having to know an item’s name. The collections page includes the Prelinger Archives, LibriVox audiobooks, the Live Music Archive, and the Software Library. Opening a collection keeps your search within it, so a title search in an audiobook collection won’t bring back printed editions from elsewhere.
 
-## Checks
+**Reading and playback**  
+Use **Read book**, **Watch video**, or **Listen to audio** on records where those options are available. The reader and players come from the Internet Archive. If an item requires sign-in or borrowing, its source link takes you to archive.org to check access.
 
-`npx tsc --noEmit`, `npm run build`; `npm start` then `npm run test:live` and `node tests/rights.mjs`. Set `CHROME_BIN` if using a system Chromium executable. Live tests require network access; no sample data is substituted.
+**Image galleries and files**  
+The cover is not always the whole item. For example, [*About Bananas* by Castle Films](https://openarchive-catalogue.vercel.app/item/AboutBan1935) has a film to watch and a gallery of stills to inspect. Step through the images, or open **Browse files** to find a particular filename or format. Each preview belongs to the file you selected. Downloads open on archive.org.
+
+**Shareable records**  
+Choose **Copy item link** to share the Open Archive page for a particular work. The recipient gets the same record, not a search they have to repeat. **View on archive.org** is a separate link to the original source.
+
+## Access and reuse
+
+- **Browsing:** No Open Archive account is required. Search results and media load from the Internet Archive, so an internet connection is needed.
+- **Availability:** A catalogue entry can exist even when its files are restricted, unavailable, or no longer public. The original record shows the current access options.
+- **Reuse:** Being able to view or download a file does not grant permission to republish it. Check the rights statement and licence on the original item before using it in your own work.
+
+[Terms & Conditions](https://openarchive-catalogue.vercel.app/terms) · [Privacy Policy](https://openarchive-catalogue.vercel.app/privacy)
+
+## Credits
+
+Created by **[Shohail Mahmud](https://github.com/shohail-mahmud)**. Records and media are provided through the [Internet Archive](https://archive.org/about/), with credit to the creators and contributors named on each item. Open Archive is not affiliated with or endorsed by the Internet Archive.
+
+<p align="center">
+  <a href="https://www.instagram.com/shohailmahmud09/">
+    <img src="./src/assets/shohail-mark.png" width="48" alt="Shohail Mahmud on Instagram">
+  </a>
+</p>
