@@ -1,3 +1,4 @@
+import ActionIcon from "./ActionIcon";
 import {useEffect, useRef, useState} from 'react';
 import {detailsUrl} from '../api/archive';
 
@@ -30,8 +31,8 @@ export default function ArchiveLink({id,label,primary=false,copyOnly=false}:{id:
     if(copied) timer.current=setTimeout(()=>setStatus('idle'),2200);
   }
   return <span className="inline-flex flex-wrap items-baseline gap-x-4 gap-y-1 text-[13px]">
-    {!copyOnly&&<a href={detailsUrl(id)} target="_blank" rel="noopener noreferrer" className={primary?"record-primary":"text-action text-ink"}>{label||"View on archive.org"} ↗</a>}
-    <button type="button" className="text-action text-mute" onClick={copy}><span aria-live="polite">{status==='copied'?'Link copied ✓':local?'Copy Archive source link':'Copy item link'}</span></button>
+    {!copyOnly&&<a href={detailsUrl(id)} target="_blank" rel="noopener noreferrer" className={primary?"record-primary":"text-action text-ink"}>{label||"View on archive.org"} <ActionIcon name="external"/></a>}
+    <button type="button" className="text-action text-mute" onClick={copy}><span aria-live="polite">{status==='copied'?<>Link copied <ActionIcon name="check"/></>:local?'Copy Archive source link':'Copy item link'}</span></button>
     {status==='blocked'&&<label className="basis-full text-xs text-mute">This browser blocked automatic copying. Copy the selected link:
       <input readOnly aria-label="Shareable item URL" className="mt-1 block w-full rounded border border-rule p-2 text-ink" value={url} onFocus={e=>e.target.select()} autoFocus/>
     </label>}
