@@ -1,25 +1,37 @@
-import {useEffect,useState} from 'react';
+import {useLayoutEffect,useRef,useState} from 'react';
 import {href} from '../router';
+import './cookie-dialog.css';
 
-const key = 'open-archive.home-notice.v1';
-export default function CookieNotice() {
-  const [visible, setVisible] = useState(() => {
-    try { const saved = localStorage.getItem(key); return saved !== 'seen' && saved !== 'dismissed'; } catch { return true; }
+const key='open-archive.home-notice.acknowledged.v1';
+let acknowledgedThisVisit=false;
+export default function CookieNotice(){
+  const [visible,setVisible]=useState(()=>{
+    if(acknowledgedThisVisit)return false;
+    try{return localStorage.getItem(key)!=='yes'}catch{return true}
   });
-  useEffect(() => {
-    if (!visible) return;
-    function remember() {
-      if (document.visibilityState !== 'visible') return;
-      try { localStorage.setItem(key, 'seen'); } catch { /* Storage is optional. */ }
-    }
-    remember();
-    document.addEventListener('visibilitychange', remember);
-    return () => document.removeEventListener('visibilitychange', remember);
-  }, [visible]);
-  if (!visible) return null;
-  return <aside className="cookie-notice" aria-label="Cookie and media notice"><div>
-    <section><h2>Cookies &amp; media</h2>
-    <p>Media loads from archive.org, which may use cookies. By continuing to view, play, read or download, you agree to our <a href={href('/terms')}>Terms &amp; Conditions</a>. See our <a href={href('/privacy')}>Privacy Policy</a>.</p></section>
-    <button type="button" onClick={() => setVisible(false)}>Got it</button>
-  </div></aside>;
+  const ref=useRef<HTMLDialogElement>(null);
+  useLayoutEffect(()=>{
+    const dialog=ref.current;
+    if(!visible||!dialog)return;
+    const previous=document.documentElement.style.overflow;
+    document.documentElement.style.overflow='hidden';
+    const keepOpen=(e:KeyboardEvent)=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation()}};
+    dialog.setAttribute('closedby','none');
+    window.addEventListener('keydown',keepOpen,true);
+    dialog.showModal();
+    return ()=>{window.removeEventListener('keydown',keepOpen,true);dialog.close();document.documentElement.style.overflow=previous};
+  },[visible]);
+  function acknowledge(){
+    acknowledgedThisVisit=true;
+    try{localStorage.setItem(key,'yes')}catch{/* Keep the acknowledgement in memory when storage is blocked. */}
+    setVisible(false);
+  }
+  if(!visible)return null;
+  return <dialog ref={ref} className="oa-cookie-dialog" aria-labelledby="oa-cookie-title" aria-describedby="oa-cookie-copy" onCancel={event=>event.preventDefault()}>
+    <p className="oa-cookie-kicker">Open Archive</p>
+    <h2 id="oa-cookie-title" className="display">Cookies &amp; media</h2>
+    <p id="oa-cookie-copy">Images, books and players load from archive.org, which may use cookies. By continuing to browse, you agree to our Terms &amp; Conditions.</p>
+    <div className="oa-cookie-links"><a href={href('/terms')} target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a><a href={href('/privacy')} target="_blank" rel="noopener noreferrer">Privacy Policy</a></div>
+    <button type="button" autoFocus onClick={acknowledge}>Got it, continue</button>
+  </dialog>;
 }
