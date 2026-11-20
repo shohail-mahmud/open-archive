@@ -1,3 +1,4 @@
+import ActionIcon from "./ActionIcon";
 import {useEffect,useRef,useState} from 'react';
 import {getDocument,GlobalWorkerOptions,type PDFDocumentProxy} from 'pdfjs-dist';
 import worker from 'pdfjs-dist/build/pdf.worker.min.mjs?raw';
@@ -27,11 +28,11 @@ export default function BookReader({id,files,autoOpen=false}:{id:string;files:Ar
  <h2 className="text-[11px] uppercase tracking-[0.2em] text-mute">Read online</h2>
  <div className="my-4 flex flex-wrap items-baseline gap-5"><h3 className="display text-3xl">Reading room</h3>
  {pdf&&txt&&<label className="text-sm">Edition <select className="border-b border-rule" value={format} onChange={e=>{choose(e.target.value as 'pdf'|'text');start(n=>n+1)}}><option value="pdf">Printed pages</option><option value="text">Plain text</option></select></label>}
- {file&&(!run||err)&&<button className="text-action text-sm" onClick={()=>start(n=>n+1)}>{run?'Retry':'Open book'} →</button>}</div>
- {!file&&<p className="text-sm text-mute">No public PDF or plain-text edition is listed. <a className="text-action" href={detailsUrl(id)} target="_blank" rel="noreferrer">Check the original reader ↗</a></p>}
+ {file&&(!run||err)&&<button className="text-action text-sm" onClick={()=>start(n=>n+1)}>{run?'Retry':'Open book'} <ActionIcon name="forward"/></button>}</div>
+ {!file&&<p className="text-sm text-mute">No public PDF or plain-text edition is listed. <a className="text-action" href={detailsUrl(id)} target="_blank" rel="noreferrer">Check the original reader <ActionIcon name="external"/></a></p>}
  {!!run&&<><p role="status" className="text-sm text-mute">{err|| (busy?'Loading page…':'')}</p>
- {err&&<a className="record-secondary" href={url} target="_blank" rel="noopener noreferrer">Open this edition on archive.org ↗</a>}
- {total>0&&<nav aria-label="Book pages" className="my-4 flex items-center gap-6 text-sm"><button className="text-action disabled:opacity-30" disabled={page<=1} onClick={()=>setPage(p=>p-1)}>← Previous</button><span>{format==='pdf'?'Page':'Section'} {page} of {total}</span><button className="text-action disabled:opacity-30" disabled={page>=total} onClick={()=>setPage(p=>p+1)}>Next →</button></nav>}
+ {err&&<a className="record-secondary" href={url} target="_blank" rel="noopener noreferrer">Open this edition on archive.org <ActionIcon name="external"/></a>}
+ {total>0&&<nav aria-label="Book pages" className="my-4 flex items-center gap-6 text-sm"><button className="text-action disabled:opacity-30" disabled={page<=1} onClick={()=>setPage(p=>p-1)}><ActionIcon name="back"/> Previous</button><span>{format==='pdf'?'Page':'Section'} {page} of {total}</span><button className="text-action disabled:opacity-30" disabled={page>=total} onClick={()=>setPage(p=>p+1)}>Next <ActionIcon name="forward"/></button></nav>}
  {format==='pdf'&&doc&&<canvas ref={canvas} aria-label={`Book page ${page}`} className="mx-auto block h-auto max-w-full border border-rule" style={{visibility:busy||err?'hidden':'visible'}}/>}
  {format==='text'&&text.length>0&&<p className="mx-auto max-w-prose whitespace-pre-wrap leading-relaxed">{text[page-1]}</p>}</>}
  </section>;
