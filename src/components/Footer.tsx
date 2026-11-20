@@ -1,6 +1,7 @@
 import ActionIcon from "./ActionIcon";
 import "@fontsource/dai-banna-sil/latin-500-italic.css";
 import "@fontsource/caveat/latin-500.css";
+import domeMark from "../../public/favicon.ico?inline";
 import signatureMark from "../assets/shohail-mark.png";
 import { href } from "../router";
 
@@ -26,8 +27,8 @@ const COLS: { title: string; links: { label: string; to: string; external?: bool
 export default function Footer() {
   return (
     <footer className="page-end-gap border-t border-rule">
-      <div className="grid grid-cols-2 gap-x-6 gap-y-12 px-5 py-12 text-[13px] sm:px-8 md:grid-cols-12 lg:px-10">
-        <div className="col-span-2 max-w-xs md:col-span-5">
+      <div className="px-5 py-12 text-[13px] sm:px-8 lg:px-10">
+        <div className="max-w-xs">
           <p className="leading-relaxed text-mute">
           Independent catalogue by Shohail Mahmud. Records are sourced from archive.org. Not affiliated with or endorsed by the Internet Archive.
           </p>
@@ -36,11 +37,15 @@ export default function Footer() {
             <span>A website by <a href="https://www.instagram.com/shohailmahmud09/" target="_blank" rel="noopener noreferrer" aria-label="Shohail Mahmud on Instagram" className="text-action whitespace-nowrap">Shohail Mahmud</a>.</span>
           </p>
         </div>
+        <div className="mt-8 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-x-2 sm:gap-x-6">
+        <a href={href("/")} aria-label="Open Archive home" className="col-start-2 row-start-1 self-center justify-self-center grid min-h-11 min-w-11 place-items-center p-1">
+          <img src={domeMark} width={56} height={56} alt="" className="block size-[1.8rem] object-contain sm:size-[2.4rem]" />
+        </a>
         {COLS.map((c, i) => (
           <nav
             key={c.title}
             aria-label={c.title}
-            className={i === 0 ? "md:col-span-3 md:col-start-7" : "md:col-span-3"}
+            className={i === 0 ? "col-start-1 row-start-1" : "col-start-3 row-start-1 text-right"}
           >
             <h3 className="mb-4 text-[10px] uppercase tracking-[0.18em] text-mute">{c.title}</h3>
             <ul className="space-y-2.5">
@@ -59,6 +64,7 @@ export default function Footer() {
             </ul>
           </nav>
         ))}
+        </div>
       </div>
 
       <nav aria-label="Site policies" className="flex flex-wrap justify-center gap-x-6 gap-y-2 px-5 pb-4 text-[12px] text-mute sm:px-8 lg:px-10">
