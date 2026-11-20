@@ -1,3 +1,4 @@
+import ActionIcon from "../components/ActionIcon";
 import "./item.css";
 
 import ImageGallery,{isGalleryImage} from "../components/ImageGallery";
@@ -40,7 +41,7 @@ export default function Item({ id }: { id: string }) {
 
   return (
     <main className="record-page px-5 sm:px-8 lg:px-10">
-      <nav aria-label="Breadcrumb" className="record-crumb"><a href={history.state?.archiveFrom || href("/explore")} onClick={e=>{if(history.state?.archiveFrom && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey){e.preventDefault();history.back()}}}>{history.state?.archiveFrom && !history.state.archiveFrom.replace(/^#/,'').startsWith('/explore')?'← Back':'← Explore'}</a><span aria-hidden="true">/</span><span>Item record</span></nav>
+      <nav aria-label="Breadcrumb" className="record-crumb"><a href={history.state?.archiveFrom || href("/explore")} onClick={e=>{if(history.state?.archiveFrom && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey){e.preventDefault();history.back()}}}><ActionIcon name="back"/> {history.state?.archiveFrom && !history.state.archiveFrom.replace(/^#/,'').startsWith('/explore')?'Back':'Explore'}</a><span aria-hidden="true">/</span><span>Item record</span></nav>
 
       {error ? (
         <div className="py-20 text-center">
@@ -48,7 +49,7 @@ export default function Item({ id }: { id: string }) {
           <p className="mt-3 text-sm text-mute">{error}</p>
           <button className="text-action mt-6 text-sm" onClick={() => setTick((t) => t + 1)}>
             Try again
-          </button> <a href={detailsUrl(id)} className="record-secondary" target="_blank" rel="noopener noreferrer">Check the original record ↗</a>
+          </button> <a href={detailsUrl(id)} className="record-secondary" target="_blank" rel="noopener noreferrer">Check the original record <ActionIcon name="external"/></a>
         </div>
       ) : item === undefined ? (
         <div className="mt-10 grid gap-10 md:grid-cols-12" aria-busy="true">
@@ -94,7 +95,7 @@ function Detail({ id, item }: { id: string; item: ItemMetadata }) {
     if(jump) requestAnimationFrame(()=>{contentRef.current?.focus({preventScroll:true});contentRef.current?.scrollIntoView({block:"start"})});
   };
   const title = first(m.title) ?? id;
-  useEffect(()=>{document.title=`${title} — Open Archive`},[title]);
+  useEffect(()=>{document.title=`${title} - Open Archive`},[title]);
   const creators = asArray(m.creator);
   const subjects = asArray(m.subject).flatMap((s) => s.split(/\s*;\s*/)).filter(Boolean);
   const description = "For the full description, artwork and access options, visit the original Archive record.";
@@ -128,17 +129,18 @@ function Detail({ id, item }: { id: string; item: ItemMetadata }) {
   return <article className="record fade">
     <header className="record-hero">
       <figure className="record-figure"><div className="record-mount">{open?<Thumbnail src={thumbUrl(id)} referrerPolicy="no-referrer" alt={`Cover for ${title}`} className="record-cover"/>:<span>Limited access</span>}</div>
-      {images.length>0 && <button className="gallery-shortcut" onClick={()=>activate('images',true)}>View {images.length===1?"image":`all ${images.length} images`} →</button>}
+      {images.length>0 && <button className="gallery-shortcut" onClick={()=>activate('images',true)}>View {images.length===1?"image":`all ${images.length} images`} <ActionIcon name="forward"/></button>}
       </figure>
       <div className="record-intro"><p className="record-type">{[MEDIA_LABEL[type] || type || "Archive item", first(m.date), open ? (item.files.length?"Public access":"Catalogue record") : "Limited access"].filter(Boolean).join(" · ")}</p>
         <h1 className="display">{title}</h1>
         {creators.length>0&&<p className="record-by">By {creators.join(", ")}</p>}
         {open && <><div className="record-actions">
-          {!item.files.length&&<a className="record-primary" href={detailsUrl(id)} target="_blank" rel="noopener noreferrer">{sourceAction} on archive.org ↗</a>}
-          {item.sourceFilesAvailable&&<a className="record-secondary" href={sourceDirectory(id)} target="_blank" rel="noopener noreferrer">Download options on archive.org ↗</a>}
-          {playable&&<button className="record-primary" onClick={()=>activate('media',true)}>{book?"Read book":type==='movies'?"Watch video":"Listen to audio"} <span aria-hidden="true">→</span></button>}
-          {originalImage&&<FileLink url={fileUrl(id,originalImage.name)} name={originalImage.name.split('/').pop()!} size={Number(originalImage.size)} className="record-primary">Download image on archive.org ↗</FileLink>}
-          {!!files.length&&<button className={playable||originalImage?"record-secondary":"record-primary"} onClick={()=>activate('files',true)}>Browse files →</button>}
+          {!item.files.length&&<a className="record-primary" href={detailsUrl(id)} target="_blank" rel="noopener noreferrer">{sourceAction} on archive.org <ActionIcon name="external"/></a>}
+
+          {playable&&<button className="record-primary" onClick={()=>activate('media',true)}>{book?"Read book":type==='movies'?"Watch video":"Listen to audio"} <span aria-hidden="true"><ActionIcon name="forward"/></span></button>}
+          {originalImage&&<FileLink url={fileUrl(id,originalImage.name)} name={originalImage.name.split('/').pop()!} size={Number(originalImage.size)} className="record-primary">Download image on archive.org <ActionIcon name="external"/></FileLink>}
+          {!!files.length&&<button className={playable||originalImage?"record-secondary":"record-primary"} onClick={()=>activate('files',true)}>Browse files <ActionIcon name="forward"/></button>}
+          {item.sourceFilesAvailable&&<a className="record-secondary" href={sourceDirectory(id)} target="_blank" rel="noopener noreferrer">Download options on archive.org <ActionIcon name="external"/></a>}
         </div>{!item.files.length&&<p className="record-note">Opens in a new tab. The Archive controls which viewing and download options are available. This catalogue does not serve these files.</p>}<ArchiveLink id={id} copyOnly={!item.files.length}/></>}
         {!open&&<AccessNotice id={id} access={access} related={tags[0]||creators[0]||first(m.title)}/>}
       </div>
@@ -154,12 +156,12 @@ function Detail({ id, item }: { id: string; item: ItemMetadata }) {
         {description.length>850&&<button className="record-more" onClick={()=>showDescription(!showAll)}>{showAll?'Show less':'Read full description'}</button>}
         {!!tags.length&&<><h3 className="record-label record-subhead">Subjects</h3><ul className="record-tags">{tags.slice(0,18).map(s=><li key={s}><a href={href('/explore',{q:s,field:'subject'})}>{s}</a></li>)}</ul></>}
       </section><aside className="record-details"><h2>Catalogue details</h2><dl>{rows.filter(([,v])=>v).map(([k,v])=><div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
-        {license&&<div><dt>Source licence</dt><dd><a href={license} rel="noreferrer" target="_blank">{license} ↗</a></dd></div>}</dl></aside></div>}
+        {license&&<div><dt>Source licence</dt><dd><a href={license} rel="noreferrer" target="_blank">{license} <ActionIcon name="external"/></a></dd></div>}</dl></aside></div>}
       {playable&&section==='media'&&<section aria-label={mediaName} className="record-media"><h2 className="display">{mediaName}</h2>
         <iframe title={`${mediaName}: ${title}`} src={embedUrl(id)} referrerPolicy="no-referrer" allow="fullscreen" allowFullScreen style={{width:'100%',height:book?'min(76vh,820px)':type==='movies'?'min(58vw,540px)':'220px',border:0}}/>
-        <p className="record-note">Reader or player not available? <a className="text-action" href={detailsUrl(id)} target="_blank" rel="noopener noreferrer">{sourceAction} on archive.org ↗</a></p></section>}
+        <p className="record-note">Reader or player not available? <a className="text-action" href={detailsUrl(id)} target="_blank" rel="noopener noreferrer">{sourceAction} on archive.org <ActionIcon name="external"/></a></p></section>}
       {section==='images'&&!!images.length&&<ImageGallery id={id} files={images} index={imageIndex} select={setImageIndex}/>}
-      {section==='files'&&<section aria-label="Files" className="record-files"><div className="record-file-head"><div><h2 className="display">Files &amp; downloads</h2><p className="record-note">Preview a file or download it. Thumbnails and alternate formats are listed separately. <a className="text-action font-medium" href={href("/terms")}>Check reuse rights →</a></p></div>
+      {section==='files'&&<section aria-label="Files" className="record-files"><div className="record-file-head"><div><h2 className="display">Files &amp; downloads</h2><p className="record-note">Preview a file or download it. Thumbnails and alternate formats are listed separately. <a className="text-action font-medium" href={href("/terms")}>Check reuse rights <ActionIcon name="forward"/></a></p></div>
       {files.length>1&&<label><span className="sr-only">Filter files by name or format</span><input placeholder="Filter by filename or format…" value={fileQuery} onChange={e=>{filterFiles(e.target.value);setLimit(25)}}/></label>}</div>
       <ul>{matched.slice(0,fileLimit).map(f=><li key={f.name}><RecordFile id={id} f={f} active={previewFile===f.name} toggle={()=>preview(previewFile===f.name?"":f.name)}/></li>)}</ul>
       {!matched.length&&<p className="record-note">No matching files. <button onClick={()=>filterFiles('')}>Clear filter</button></p>}
@@ -184,7 +186,7 @@ function AccessNotice({ id, access, related }: { id: string; access: ReturnType<
       <p className="mt-2 text-[14px] leading-relaxed text-mute">{access.reason}</p>
       <div className="mt-4 flex flex-wrap gap-x-6 gap-y-3 text-[13px]">
         <a href={href("/explore", { q: related, open: "1" })} className="text-action">
-          {related ? "Find related open items" : "Browse open items"} →
+          {related ? "Find related open items" : "Browse open items"} <ActionIcon name="forward"/>
         </a>
         <ArchiveLink id={id} primary label="Check access on archive.org" />
       </div>
