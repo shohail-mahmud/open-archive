@@ -1,3 +1,4 @@
+import ActionIcon from "./ActionIcon";
 import {useState} from 'react';
 import {fileUrl,formatBytes,type ArchiveFile} from '../api/archive';
 import {isGalleryImage} from './ImageGallery';
@@ -14,6 +15,6 @@ export default function RecordFile({id,f,active,toggle}:{id:string;f:ArchiveFile
  const source=thumbnail?'Thumbnail':f.source==='original'?'Original':f.source==='derivative'?'Derived file':'';
  return <div className="individual-file"><div className="individual-file-head"><div><strong>{f.name}</strong><small>{[source,f.format,formatBytes(f.size)].filter(Boolean).join(' · ')}{f.original && <> · From: {f.original}</>}</small></div>
  <div className="file-actions">{kind(f)?<button type="button" aria-label={`${active?'Hide preview of':'Preview'} ${f.name}`} aria-expanded={active} onClick={toggle}>{active?'Hide preview':'Preview'}</button>:<small>Download only</small>}
- <FileLink className="record-secondary" url={fileUrl(id,f.name)} name={f.name.split('/').pop()!} size={Number(f.size)}>Download ↓</FileLink></div></div>
+ <FileLink className="record-secondary" url={fileUrl(id,f.name)} name={f.name.split('/').pop()!} size={Number(f.size)}>Download <ActionIcon name="download"/></FileLink></div></div>
  {active&&kind(f)&&<Preview id={id} f={f}/>}</div>;
 }
