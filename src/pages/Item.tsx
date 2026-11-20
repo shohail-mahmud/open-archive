@@ -128,12 +128,14 @@ function Detail({ id, item }: { id: string; item: ItemMetadata }) {
   const shortDescription = description.length>850 && !showAll;
   return <article className="record fade">
     <header className="record-hero">
+      <div className="record-intro record-heading"><p className="record-type">{[MEDIA_LABEL[type] || type || "Archive item", first(m.date), open ? (item.files.length?"Public access":"Catalogue record") : "Limited access"].filter(Boolean).join(" · ")}</p>
+        <h1 className="display">{title}</h1>
+        {creators.length>0&&<p className="record-by">By {creators.join(", ")}</p>}
+      </div>
       <figure className="record-figure"><div className="record-mount">{open?<Thumbnail src={thumbUrl(id)} referrerPolicy="no-referrer" alt={`Cover for ${title}`} className="record-cover"/>:<span>Limited access</span>}</div>
       {images.length>0 && <button className="gallery-shortcut" onClick={()=>activate('images',true)}>View {images.length===1?"image":`all ${images.length} images`} <ActionIcon name="forward"/></button>}
       </figure>
-      <div className="record-intro"><p className="record-type">{[MEDIA_LABEL[type] || type || "Archive item", first(m.date), open ? (item.files.length?"Public access":"Catalogue record") : "Limited access"].filter(Boolean).join(" · ")}</p>
-        <h1 className="display">{title}</h1>
-        {creators.length>0&&<p className="record-by">By {creators.join(", ")}</p>}
+      <div className="record-intro record-controls">
         {open && <><div className="record-actions">
           {!item.files.length&&<a className="record-primary" href={detailsUrl(id)} target="_blank" rel="noopener noreferrer">{sourceAction} on archive.org <ActionIcon name="external"/></a>}
 
